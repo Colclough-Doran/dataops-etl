@@ -1,4 +1,4 @@
-FROM python:3.15
+FROM python:3.12
 WORKDIR /usr/local/app
 
 # Install the application dependencies
@@ -13,4 +13,4 @@ EXPOSE 8080
 RUN useradd elt
 USER etl
 
-CMD ['py', './src/etl.py']
+CMD ["py", "./src/etl.py"]
