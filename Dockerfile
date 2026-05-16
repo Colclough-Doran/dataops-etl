@@ -13,4 +13,4 @@ EXPOSE 8080
 RUN useradd elt
 USER etl
 
-CMD ['py', './src/etl.py']
+CMD ["py", "./src/etl.py"]
