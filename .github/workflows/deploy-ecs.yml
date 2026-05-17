@@ -7,8 +7,8 @@ on:
 env:
   AWS_REGION: eu-west-1                  
   ECR_REPOSITORY: dataops-etl          
-  ECS_SERVICE: dataops                
-  ECS_CLUSTER: dataops-etl              
+  ECS_SERVICE: dataops-etl                
+  ECS_CLUSTER: dataops              
   ECS_TASK_DEFINITION: ./task-definition.json
                                              
   CONTAINER_NAME: Main     
