@@ -6,25 +6,24 @@ resource "aws_ecs_task_definition" "default_dataops_etl" {
   memory                   = "2048"
   network_mode             = "awsvpc"
 
-  execution_role_arn = data.terraform_remote_state.iam_roles.outputs.ecs_dataops_task_execution_arn
-  task_role_arn      = data.terraform_remote_state.iam_roles.outputs.ecs_dataops_task_execution_arn
+  execution_role_arn = "arn:aws:iam::804792415489:role/dataops-ecs-task-execution"
+  task_role_arn      = "arn:aws:iam::804792415489:role/dataops-ecs-task-execution"
 
   runtime_platform {
     cpu_architecture        = "X86_64"
     operating_system_family = "LINUX"
   }
 
-  #container_definitions = jsondecode(file("definitions/default-dataops-etl.json"))
   container_definitions = jsonencode([
     {
       name  = "Main"
-      image = "${var.image}"
+      image = "804792415489.dkr.ecr.eu-west-1.amazonaws.com/dataops-etl@sha256:ad73673c32c5ef90fbca206d11da1938168ba06dce125878d93859db9dd3a2d8"
 
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "test-etl-dataops"
-          awslogs-region        = "${var.aws_region}"
+          awslogs-region        = "eu-west-1"
           awslogs-stream-prefix = "ecs-dataops"
         }
       }
