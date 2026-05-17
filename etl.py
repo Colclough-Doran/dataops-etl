@@ -20,8 +20,8 @@ destination_bucket_key = "transformed-data/"
 
 # AWS Commands
 
-cmd_get_file = f'aws s3api get-object --bucket {bucket_name} --key {origin_bucket_key} {source_data_file}'
-cmd_put_file = f'aws s3api put-object --bucket {bucket_name} --key {destination_bucket_key} {wind_speed_data_file}'
+cmd_get_file = f'aws s3api get-object --bucket {bucket_name} --key {origin_bucket_key}{source_data_file} {source_data_file}'
+cmd_put_file = f'aws s3api put-object --bucket {bucket_name} --key {destination_bucket_key}{wind_speed_data_file}'
 
 # System Commands
 
