@@ -1,84 +1,47 @@
-## Imports
-
+# Imports
 import pandas as pd
-import subprocess as sp
+import boto3
+from io import BytesIO
 
-## Variables
-
-# Files
-
-source_data_file = 'weather.2016.parquet'
-wind_speed_data_file = 'wind_dataset.csv'
-
-# Buckets
-
+# Buckets and keys
 bucket_name = 'dataops-eu-west-1'
-origin_bucket_key = 'origin-data/'
-destination_bucket_key = "transformed-data/"
+origin_bucket_key = 'origin-data/weather.2016.parquet'
+destination_bucket_key = 'transformed-data/wind_dataset.csv'
 
-## Commands
+# Initialize S3 client
+s3 = boto3.client('s3')
 
-# AWS Commands
-
-cmd_get_file = f'aws s3api get-object --bucket {bucket_name} --key {origin_bucket_key}{source_data_file} {source_data_file}'
-cmd_put_file = f'aws s3api put-object --bucket {bucket_name} --key {destination_bucket_key}{wind_speed_data_file}'
-
-# System Commands
-
-rm_file = f'rm {source_data_file} {wind_speed_data_file}'
-
-## Download file
-
+# Data downstream
 try:
-    print(f'\nDownloading data frame {source_data_file}\n')
-    sp.run(cmd_get_file)
+    print(f'\nDownloading {origin_bucket_key} from {bucket_name}\n')
+    response = s3.get_object(Bucket=bucket_name, Key=origin_bucket_key)
+    # Read the Parquet file directly from the S3 response
+    data_frame = pd.read_parquet(BytesIO(response['Body'].read()))
+    print("File downloaded and loaded successfully.")
 except Exception as e:
-    print(f'Unable to downalod data frame {source_data_file}\n \
-          Bucket: {bucket_name}\n \
-          Bucket key: {origin_bucket_key}\n \
-          Error: {e}'
-          )
+    print(f'Unable to download or read {origin_bucket_key}\nError: {e}')
+    exit(1)
 
-## Main
-
-print(f'\nReading from file {source_data_file}\n')
+# Process data
 try:
-    data_frame = pd.read_parquet(source_data_file)
+    print(f'Filtering data...')
+    windspeed_df = data_frame[data_frame['WindSpeed'] < 7]
+    csv_data = windspeed_df.to_csv(index=False)
 except Exception as e:
-    print(f'Unable to read {source_data_file}\n \
-          Error: {e}')
+    print(f'Cannot process data\nError: {e}')
+    exit(1)
 
-## Write to file
-
+# Upload file to S3
 try:
-    
-    print(f'Writing to file: {wind_speed_data_file}')
-    windspeed_df = pd.read_parquet(source_data_file, filters=[('WindSpeed','<', 7)])
-    windspeed_df.to_csv(wind_speed_data_file)
-
+    print(f'\nUploading {destination_bucket_key} to {bucket_name}\n')
+    s3.put_object(
+        Bucket=bucket_name,
+        Key=destination_bucket_key,
+        Body=csv_data.encode('utf-8')
+    )
+    print("File uploaded successfully.")
 except Exception as e:
-    print(f'Cannot write to file {wind_speed_data_file}\nError: {e}')
+    print(f'Unable to upload {destination_bucket_key}\nError: {e}')
+    exit(1)
 
-## Upload
-
-try:
-    
-    print(f'\nUploading data frame to {bucket_name}/{destination_bucket_key}{wind_speed_data_file}\n')
-    sp.run(cmd_put_file)
-
-except Exception as e:
-    print(f'Unable to upload data from {wind_speed_data_file} \n \
-          Bucket: {bucket_name}\n \
-          Bucket key: {destination_bucket_key}\n \
-          Error: {e}'
-          )
-    
-## Clean up
-
-print(f'Clean up, removing {source_data_file} and {wind_speed_data_file}')
-try:
-    
-    sp.run(rm_file)
-
-except Exception as e:
-    print(f'Clean up failed: {e}')
+print("Task completed successfully.")
