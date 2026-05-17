@@ -13,4 +13,4 @@ EXPOSE 8080
 RUN useradd appuser
 USER appuser
 
-CMD ["py", "./src/etl.py"]
+CMD ["python", "./src/etl.py"]
