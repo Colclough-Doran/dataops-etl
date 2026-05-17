@@ -20,8 +20,8 @@ destination_bucket_key = "transformed-data/"
 
 # AWS Commands
 
-cmd_get_file = f'aws s3api get-object --bucket {bucket_name} --key {origin_bucket_key}{source_data_file} {source_data_file}'
-cmd_put_file = f'aws s3api put-object --bucket {bucket_name} --key {destination_bucket_key}{wind_speed_data_file}'
+cmd_get_file = f'aws s3api get-object --bucket {bucket_name} --key {origin_bucket_key} {source_data_file}'
+cmd_put_file = f'aws s3api put-object --bucket {bucket_name} --key {destination_bucket_key} {wind_speed_data_file}'
 
 # System Commands
 
@@ -34,7 +34,10 @@ try:
     sp.run(cmd_get_file)
 except Exception as e:
     print(f'Unable to downalod data frame {source_data_file}\n \
-          Error: {e}')
+          Bucket: {bucket_name}\n \
+          Bucket key: {origin_bucket_key}\n \
+          Error: {e}'
+          )
 
 ## Main
 
