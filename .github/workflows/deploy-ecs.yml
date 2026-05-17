@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: dataops-etl          
   ECS_SERVICE: dataops                
   ECS_CLUSTER: dataops-etl              
-  ECS_TASK_DEFINITION: infrastructure/ecs/definitions/default-dataops-etl.json
+  ECS_TASK_DEFINITION: default-dataops-etl.json
                                              
   CONTAINER_NAME: Main     
 
