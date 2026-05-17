@@ -1,7 +1,7 @@
 # Imports
-import pandas as pd
 import boto3
 from io import BytesIO
+import pandas as pd
 
 # Buckets and keys
 bucket_name = 'dataops-eu-west-1'
