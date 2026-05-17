@@ -5,12 +5,12 @@ WORKDIR /usr/local/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy in the source code
-COPY etl.py ./src
-EXPOSE 8080
+# Python script into the working directory
+COPY etl.py .
 
-# Setup appuser user so the container doesn't run as the root user
+# Setup non root user appuser
 RUN useradd appuser
 USER appuser
 
-CMD ["python", "./src/etl.py"]
+# Run the script
+CMD ["python", "etl.py"]
