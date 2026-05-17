@@ -10,7 +10,7 @@ COPY etl.py ./src
 EXPOSE 8080
 
 # Setup appuser user so the container doesn't run as the root user
-RUN addgroup -g 1001 appgroup && adduser -D -u 1001 -g 1001 -G appgroup appuser
+RUN useradd appuser
 USER appuser
 
 CMD ["py", "./src/etl.py"]
