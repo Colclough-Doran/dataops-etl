@@ -9,8 +9,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY etl.py ./src
 EXPOSE 8080
 
-# Setup an etl user so the container doesn't run as the root user
-RUN useradd elt
-USER etl
+# Setup appuser user so the container doesn't run as the root user
+RUN addgroup -g 1001 appgroup && \
+    adduser -D -u 1001 -G appgroup appuser
+USER appuser
 
 CMD ["py", "./src/etl.py"]
