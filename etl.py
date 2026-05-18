@@ -15,7 +15,6 @@ s3 = boto3.client('s3')
 try:
     print(f'\nDownloading {origin_bucket_key} from {bucket_name}\n')
     response = s3.get_object(Bucket=bucket_name, Key=origin_bucket_key)
-    # Read the Parquet file directly from the S3 response
     data_frame = pd.read_parquet(BytesIO(response['Body'].read()))
     print("File downloaded and loaded successfully.")
 except Exception as e:
