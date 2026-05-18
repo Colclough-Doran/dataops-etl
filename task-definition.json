@@ -19,9 +19,9 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "test-etl-dataops",
+                    "awslogs-group": "/aws/ecs/",
                     "awslogs-region": "eu-west-1",
-                    "awslogs-stream-prefix": "ecs-dataops"
+                    "awslogs-stream-prefix": "dataops/etl"
                 }
             },
             "systemControls": []
